@@ -41,7 +41,7 @@ const Navigation = ({ links, scrolled, isHomePage }) => (
         key={link.to}
         to={link.to}
         className={({ isActive }) =>
-          `relative text-sm font-medium transition-colors after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:scale-x-0 after:origin-center after:bg-current after:transition-transform hover:after:scale-x-100 ${isActive ? 'after:scale-x-100' : ''} ${!isHomePage || scrolled ? 'text-black' : 'text-cream/80 hover:text-cream'}`
+          `relative text-sm font-medium transition-colors after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:scale-x-0 after:origin-center after:bg-current after:transition-transform hover:after:scale-x-100 ${isActive ? 'after:scale-x-100' : ''} ${!isHomePage || scrolled ? 'text-black !bg-clip-border' : 'text-cream/80 hover:text-cream'}`
         }
       >
         {link.label}
@@ -170,7 +170,7 @@ export const Header = () => {
             </MobileNavLink>
 
             {navLinks.map(link => (
-              <MobileNavLink key={link.to} to={link.to} closeMenu={() => setMobileMenuOpen(false)}>
+              <MobileNavLink key={link.to} to={link.to} close.setMobileMenuOpen(false)}>
                  {/* A simple switch for icons, can be improved */}
                 {link.label === 'Products' && <Crown className="h-5 w-5" />}
                 {link.label === 'Sell' && <LogIn className="h-5 w-5" />}
