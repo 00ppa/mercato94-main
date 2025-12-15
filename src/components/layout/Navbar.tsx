@@ -62,7 +62,7 @@ export function Navbar() {
                 className={cn(
                   "text-sm tracking-wide transition-colors duration-200 elegant-underline",
                   location.pathname === link.href
-                    ? "text-champagne"
+                    ? "text-black"
                     : "text-cream/70 hover:text-cream"
                 )}
               >
@@ -114,7 +114,7 @@ export function Navbar() {
                 className={cn(
                   "text-base py-2 transition-colors duration-200",
                   location.pathname === link.href
-                    ? "text-champagne"
+                    ? "text-black"
                     : "text-cream/70"
                 )}
               >
