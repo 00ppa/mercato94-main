@@ -14,6 +14,7 @@ import {
   Check,
   ChevronRight,
 } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
 import ebookTemplate from "@/assets/products/ebook-template.png";
 import uiKit from "@/assets/products/ui-kit.png";
 import courseBundle from "@/assets/products/course-bundle.png";
@@ -143,6 +144,7 @@ const products: Record<string, any> = {
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
+  const addItem = useCartStore((state) => state.addItem);
   const product = slug ? products[slug] : null;
 
   const formatPrice = (price: number, currency: string) => {
@@ -154,8 +156,19 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
+    if (!product) return;
+    
+    const itemToAdd = {
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        image: product.images[0],
+    };
+    
+    addItem(itemToAdd);
+    
     toast.success("Added to cart", {
-      description: `${product?.title} has been added to your cart.`,
+      description: `${product.title} has been added to your cart.`,
     });
   };
 
@@ -305,7 +318,7 @@ const ProductDetail = () => {
                       <Heart className="h-5 w-5" />
                     </Button>
                     <Button variant="luxury-outline" size="icon" className="h-14 w-14">
-                      <Share2 className="h-5 w-5" />
+                      <Share2 className.tsx="h-5 w-5" />
                     </Button>
                   </div>
                 </div>

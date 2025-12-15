@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, ShoppingBag, Menu, X, User, LogIn, LogOut, Crown, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCartStore } from '@/store/cartStore';
 
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
@@ -52,6 +53,8 @@ const Navigation = ({ links }) => (
 
 const HeaderActions = () => {
   const { user, logout } = useAuth();
+  const { items } = useCartStore();
+  const totalItems = items.reduce((total, item) => total + item.quantity, 0);
   
   return (
     <div className="flex items-center gap-3">
@@ -60,7 +63,9 @@ const HeaderActions = () => {
       </Button>
       <Button variant="ghost" size="icon" className="relative text-cream/70 hover:text-cream hover:bg-sapphire/10">
         <ShoppingBag className="h-5 w-5" />
-        <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-champagne text-black">3</Badge>
+        {totalItems > 0 && 
+          <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-champagne text-black">{totalItems}</Badge>
+        }
       </Button>
       {user ? (
         <div className="flex items-center gap-2">
