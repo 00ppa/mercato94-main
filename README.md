@@ -1,73 +1,58 @@
-# Welcome to your Lovable project
+# Mercato94 - E-commerce Platform
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/51e06553-0737-4950-bbd1-1f13b92fd715
+This project is an e-commerce platform built with modern web technologies. It provides a marketplace for sellers to list products and for buyers to browse and purchase them.
 
-## How can I edit this code?
+## How to Set Up and Run the Project
 
-There are several ways of editing your application.
+To get this project up and running on your local machine, follow these steps:
 
-**Use Lovable**
+1.  **Clone the Repository**:
+    ```sh
+    git clone <YOUR_GIT_URL>
+    ```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/51e06553-0737-4950-bbd1-1f13b92fd715) and start prompting.
+2.  **Navigate to the Project Directory**:
+    ```sh
+    cd <YOUR_PROJECT_NAME>
+    ```
 
-Changes made via Lovable will be committed automatically to this repo.
+3.  **Install Dependencies**:
+    ```sh
+    npm i
+    ```
 
-**Use your preferred IDE**
+4.  **Start the Development Server**:
+    ```sh
+    npm run dev
+    ```
+    This will start the development server with auto-reloading and provide an instant preview of the application.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Editing the Code
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+You can edit the application code using several methods:
 
-Follow these steps:
+*   **Use a Preferred IDE**: If you prefer to work locally, you can use your own IDE to make changes. After cloning the repository, you can push your changes, which will be reflected in the main repository.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+*   **Edit Directly in GitHub**: For quick edits, you can navigate to the desired file(s) in the GitHub repository, click the "Edit" button, make your changes, and commit them directly.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+*   **Use GitHub Codespaces**: For a more integrated development experience, you can use GitHub Codespaces. To do this, navigate to the main page of the repository, click the "Code" button, select the "Codespaces" tab, and create a new codespace. This will launch a development environment where you can edit, commit, and push your changes.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Technologies Used
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+This project is built with the following technologies:
 
-**Edit a file directly in GitHub**
+*   **Vite**: A fast build tool that provides a quicker and leaner development experience.
+*   **TypeScript**: A typed superset of JavaScript that enhances code quality and maintainability.
+*   **React**: A popular JavaScript library for building user interfaces.
+*   **shadcn-ui**: A collection of re-usable components for building modern web applications.
+*   **Tailwind CSS**: A utility-first CSS framework for creating custom designs with ease.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## How to Deploy the Project
 
-**Use GitHub Codespaces**
+To deploy this project, you can use a service that supports modern web frameworks. If you need assistance with deployment, please refer to the documentation of your chosen hosting provider.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Connecting a Custom Domain
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/51e06553-0737-4950-bbd1-1f13b92fd715) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+To connect a custom domain to your project, you will need to configure the DNS settings of your domain provider to point to the hosting service where your application is deployed. For detailed instructions, consult the documentation of your hosting provider.
