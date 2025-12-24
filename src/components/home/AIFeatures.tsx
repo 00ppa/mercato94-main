@@ -57,24 +57,24 @@ const aiFeatures = [
 
 export function AIFeatures() {
   return (
-    <section className="section-padding bg-gradient-to-b from-midnight-light via-sapphire/10 to-midnight relative overflow-hidden">
+    <section className="section-padding bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
       {/* Decorative gradients */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-sapphire/20 rounded-full blur-[120px] animate-glow-pulse" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-champagne/10 rounded-full blur-[100px]" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[120px] animate-glow-pulse" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-500/10 rounded-full blur-[100px]" />
 
       <div className="container-luxury relative z-10">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-sapphire/20 border border-sapphire/30 rounded-full mb-8 backdrop-blur-sm">
-            <Sparkles className="h-4 w-4 text-champagne" />
-            <span className="text-xs tracking-widest uppercase text-champagne">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900/20 border border-blue-800/30 rounded-full mb-8 backdrop-blur-sm">
+            <Sparkles className="h-4 w-4 text-gray-300" />
+            <span className="text-xs tracking-widest uppercase text-gray-300">
               AI-Powered Platform
             </span>
           </div>
-          <h2 className="font-serif text-4xl md:text-5xl font-medium mb-6 text-cream">
+          <h2 className="font-serif text-4xl md:text-5xl font-medium mb-6 text-white">
             Intelligence Built In
           </h2>
-          <p className="text-cream/60 text-lg">
+          <p className="text-gray-400 text-lg">
             94mercato uses AI to help sellers create better listings and buyers
             discover perfect products. All features work seamlessly in the background.
           </p>
@@ -85,21 +85,21 @@ export function AIFeatures() {
           {aiFeatures.map((feature, index) => (
             <div
               key={feature.title}
-              className="group p-6 rounded-xl border border-sapphire/20 bg-midnight/50 backdrop-blur-sm hover:bg-sapphire/10 hover:border-sapphire/40 transition-all duration-300 animate-fade-up"
+              className="group p-6 rounded-xl border border-gray-800/20 bg-gray-900/50 backdrop-blur-sm hover:bg-blue-900/10 hover:border-blue-800/40 transition-all duration-300 animate-fade-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-sapphire/30 to-sapphire/10 flex items-center justify-center group-hover:from-sapphire/40 group-hover:to-sapphire/20 transition-colors">
-                  <feature.icon className="h-6 w-6 text-champagne" />
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-900/30 to-blue-900/10 flex items-center justify-center group-hover:from-blue-800/40 group-hover:to-blue-800/20 transition-colors">
+                  <feature.icon className="h-6 w-6 text-gray-300" />
                 </div>
-                <span className="text-xs px-2 py-1 rounded-full bg-champagne/10 text-champagne/80 border border-champagne/20">
+                <span className="text-xs px-2 py-1 rounded-full bg-gray-300/10 text-gray-300/80 border border-gray-300/20">
                   {feature.tag}
                 </span>
               </div>
-              <h3 className="font-serif text-xl font-medium mb-2 text-cream">
+              <h3 className="font-serif text-xl font-medium mb-2 text-white">
                 {feature.title}
               </h3>
-              <p className="text-cream/50 text-sm leading-relaxed">
+              <p className="text-gray-400 text-sm leading-relaxed">
                 {feature.description}
               </p>
             </div>
@@ -108,17 +108,17 @@ export function AIFeatures() {
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-cream/50 mb-6">
+          <p className="text-gray-400 mb-6">
             Ready to experience the future of digital marketplaces?
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button variant="champagne" size="xl" asChild>
+            <Button variant="default" size="xl" asChild>
               <Link to="/sell">
                 Start Selling with AI
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button variant="sapphire-outline" size="xl" asChild>
+            <Button variant="outline" size="xl" asChild>
               <Link to="/products">Explore Products</Link>
             </Button>
           </div>
