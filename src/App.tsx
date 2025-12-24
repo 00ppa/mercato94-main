@@ -22,6 +22,10 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
 import Legal from "./pages/Legal";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Refund from "./pages/Refund";
+import Cookie from "./pages/Cookie";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -59,6 +63,10 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/403" element={<Forbidden />} />
               <Route path="/legal" element={<Legal />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/refunds" element={<Refund />} />
+              <Route path="/cookies" element={<Cookie />} />
 
               {/* Admin Routes - Protected */}
               <Route
