@@ -25,6 +25,7 @@ import Legal from "./pages/Legal";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Refund from "./pages/Refund";
+import License from "./pages/License";
 import Cookie from "./pages/Cookie";
 
 // Admin Pages
@@ -65,7 +66,8 @@ const App = () => (
               <Route path="/legal" element={<Legal />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
-              <Route path="/refunds" element={<Refund />} />
+              <Route path="/refund" element={<Refund />} />
+              <Route path="/license" element={<License />} />
               <Route path="/cookies" element={<Cookie />} />
 
               {/* Admin Routes - Protected */}
