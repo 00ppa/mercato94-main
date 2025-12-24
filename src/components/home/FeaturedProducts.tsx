@@ -66,7 +66,7 @@ export function FeaturedProducts() {
       {/* Decorative gradients */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-sapphire/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-champagne/5 rounded-full blur-[100px]" />
-      
+
       <div className="container-luxury relative z-10">
         {/* Section header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">

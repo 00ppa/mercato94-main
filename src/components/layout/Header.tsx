@@ -8,7 +8,7 @@ import { useCartStore } from '@/store/cartStore';
 
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
-    <svg 
+    <svg
       className="h-8 w-auto"
       width="34"
       height="34"
@@ -16,12 +16,12 @@ const Logo = () => (
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width="34" height="34" rx="8" fill="url(#paint0_linear_1_2)"/>
+      <rect width="34" height="34" rx="8" fill="url(#paint0_linear_1_2)" />
       <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="18" fill="white">94</text>
       <defs>
         <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A68B6E"/>
-          <stop offset="1" stopColor="#7A634B"/>
+          <stop stopColor="#A68B6E" />
+          <stop offset="1" stopColor="#7A634B" />
         </linearGradient>
       </defs>
     </svg>
@@ -38,10 +38,9 @@ const Navigation = ({ links }) => (
         key={link.to}
         to={link.to}
         className={({ isActive }) =>
-          `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-            isActive
-              ? 'bg-sapphire/20 text-champagne'
-              : 'text-cream/70 hover:text-cream hover:bg-sapphire/10'
+          `px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isActive
+            ? 'bg-sapphire/20 text-champagne'
+            : 'text-cream/70 hover:text-cream hover:bg-sapphire/10'
           }`
         }
       >
@@ -55,7 +54,7 @@ const HeaderActions = () => {
   const { user, logout } = useAuth();
   const { items } = useCartStore();
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-  
+
   return (
     <div className="flex items-center gap-3">
       <Button variant="ghost" size="icon" className="text-cream/70 hover:text-cream hover:bg-sapphire/10">
@@ -63,16 +62,22 @@ const HeaderActions = () => {
       </Button>
       <Button variant="ghost" size="icon" className="relative text-cream/70 hover:text-cream hover:bg-sapphire/10">
         <ShoppingBag className="h-5 w-5" />
-        {totalItems > 0 && 
+        {totalItems > 0 &&
           <Badge className="absolute -top-1 -right-1 h-4 w-4 justify-center p-0 text-xs bg-champagne text-black">{totalItems}</Badge>
         }
       </Button>
       {user ? (
         <div className="flex items-center gap-2">
-          <Link to={user.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 pl-2">
-            <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full border-2 border-champagne/50" />
+          <Link to="/profile" className="flex items-center gap-2 pl-2 hover:opacity-80 transition-opacity">
+            {user.avatar_url ? (
+              <img src={user.avatar_url} alt={user.display_name} className="h-8 w-8 rounded-full border-2 border-champagne/50 object-cover" />
+            ) : (
+              <div className="h-8 w-8 rounded-full border-2 border-champagne/50 bg-sapphire/30 flex items-center justify-center">
+                <User className="h-4 w-4 text-cream" />
+              </div>
+            )}
             <div className="hidden md:block">
-              <p className="text-sm font-medium text-cream">{user.name}</p>
+              <p className="text-sm font-medium text-cream">{user.display_name || user.name}</p>
               <p className="text-xs capitalize text-cream/60">{user.role}</p>
             </div>
           </Link>
@@ -96,8 +101,8 @@ const HeaderActions = () => {
 };
 
 const MobileNavLink = ({ to, children, closeMenu }) => (
-  <Link 
-    to={to} 
+  <Link
+    to={to}
     onClick={closeMenu}
     className="flex items-center gap-4 rounded-lg p-3 text-lg font-medium text-cream transition-colors hover:bg-white/10"
   >
@@ -146,25 +151,31 @@ export const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 top-16 z-40 bg-midnight/90 backdrop-blur-xl animate-fade-in lg:hidden"
         >
           <div className="container-luxury pt-8 space-y-4">
             {user ? (
               <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
-                <Link to={user.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                  <img src={user.avatar} alt={user.name} className="h-12 w-12 rounded-full" />
+                <Link to="/profile" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt={user.display_name} className="h-12 w-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="h-12 w-12 rounded-full bg-sapphire/30 flex items-center justify-center">
+                      <User className="h-6 w-6 text-cream" />
+                    </div>
+                  )}
                   <div>
-                    <p className="text-lg font-medium text-cream">{user.name}</p>
+                    <p className="text-lg font-medium text-cream">{user.display_name || user.name}</p>
                     <p className="text-sm capitalize text-cream/60">{user.role}</p>
                   </div>
                 </Link>
                 <Button variant="ghost" size="icon" onClick={() => { logout(); setMobileMenuOpen(false); }}>
-                  <LogOut className="h-6 w-6 text-cream/70"/>
+                  <LogOut className="h-6 w-6 text-cream/70" />
                 </Button>
               </div>
             ) : null}
-            
+
             <MobileNavLink to="/dashboard" closeMenu={() => setMobileMenuOpen(false)}>
               <LayoutDashboard className="h-5 w-5" />
               Dashboard

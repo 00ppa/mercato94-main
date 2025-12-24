@@ -4,22 +4,56 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Eye, EyeOff, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     isSeller: false,
   });
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration with Supabase Auth
+    setError("");
+
+    // Basic validation
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await signup({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        display_name: formData.name,
+        role: formData.isSeller ? 'seller' : 'buyer',
+      });
+      // Redirect to appropriate dashboard based on role
+      if (formData.isSeller) {
+        navigate("/sell/onboarding");
+      } else {
+        navigate("/purchases");
+      }
+    } catch (err: any) {
+      const message = err.response?.data?.message || "Registration failed. Please try again.";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -44,6 +78,11 @@ const Signup = () => {
 
               <div className="glass-card-elevated p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-700 p-3 rounded-md text-sm">
+                      {error}
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
@@ -55,6 +94,7 @@ const Signup = () => {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
 
@@ -69,6 +109,7 @@ const Signup = () => {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
 
@@ -84,6 +125,7 @@ const Signup = () => {
                           setFormData({ ...formData, password: e.target.value })
                         }
                         required
+                        disabled={isSubmitting}
                       />
                       <button
                         type="button"
@@ -111,6 +153,7 @@ const Signup = () => {
                         onCheckedChange={(checked) =>
                           setFormData({ ...formData, isSeller: checked as boolean })
                         }
+                        disabled={isSubmitting}
                       />
                       <div className="space-y-1">
                         <Label htmlFor="seller" className="font-medium cursor-pointer">
@@ -138,8 +181,21 @@ const Signup = () => {
                     </div>
                   )}
 
-                  <Button type="submit" variant="luxury" className="w-full" size="lg">
-                    Create Account
+                  <Button
+                    type="submit"
+                    variant="luxury"
+                    className="w-full"
+                    size="lg"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      "Create Account"
+                    )}
                   </Button>
                 </form>
 
@@ -154,7 +210,7 @@ const Signup = () => {
                   </div>
                 </div>
 
-                <Button variant="outline" className="w-full" size="lg">
+                <Button variant="outline" className="w-full" size="lg" disabled>
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"

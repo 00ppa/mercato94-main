@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SellerDashboard from "./pages/SellerDashboard";
 import BuyerDashboard from "./pages/BuyerDashboard";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
 
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
               <Route path="/dashboard" element={<SellerDashboard />} />
               <Route path="/purchases" element={<BuyerDashboard />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/403" element={<Forbidden />} />
 
               {/* Admin Routes - Protected */}

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
@@ -13,22 +13,25 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsSubmitting(true);
 
-    if (email === "outbrix94@gmail.com" && password === "jeroen") {
-      login({ 
-        name: "Jeroen", 
-        role: "admin",
-        avatar: "https://i.pravatar.cc/150?u=jeroen"
-      });
-      navigate("/admin");
-    } else {
-      setError("Invalid email or password");
+    try {
+      await login(email, password);
+      // Redirect based on role could be added here
+      // For now, redirect to dashboard
+      navigate("/dashboard");
+    } catch (err: any) {
+      const message = err.response?.data?.message || "Login failed. Please try again.";
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -68,6 +71,7 @@ const Login = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      disabled={isSubmitting}
                     />
                   </div>
 
@@ -89,6 +93,7 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={isSubmitting}
                       />
                       <button
                         type="button"
@@ -104,8 +109,21 @@ const Login = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" variant="luxury" className="w-full" size="lg">
-                    Sign In
+                  <Button
+                    type="submit"
+                    variant="luxury"
+                    className="w-full"
+                    size="lg"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing In...
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
                   </Button>
                 </form>
 
@@ -120,7 +138,7 @@ const Login = () => {
                   </div>
                 </div>
 
-                <Button variant="outline" className="w-full" size="lg">
+                <Button variant="outline" className="w-full" size="lg" disabled>
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"

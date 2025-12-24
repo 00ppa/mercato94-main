@@ -1,1 +1,32 @@
-.idx/
+Dependencies
+
+/node_modules
+/npm-debug.log
+.npm
+
+Build/Artifacts (if you ever compile or transpile code)
+
+/dist
+/build
+
+IDE and OS Files
+
+.DS_Store
+Thumbs.db
+.vscode/
+
+Environment Variables (CRITICAL for security)
+
+.env
+.env.*
+.env.local
+
+Database/Log Files
+
+*.log
+*.sqlite
+*.sqlite-journal
+
+Testing/Coverage (if testing frameworks are added later)
+
+/coverage

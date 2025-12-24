@@ -157,16 +157,16 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
+
     const itemToAdd = {
-        id: product.id,
-        name: product.title,
-        price: product.price,
-        image: product.images[0],
+      id: product.id,
+      name: product.title,
+      price: product.price,
+      image: product.images[0],
     };
-    
+
     addItem(itemToAdd);
-    
+
     toast.success("Added to cart", {
       description: `${product.title} has been added to your cart.`,
     });
@@ -279,11 +279,10 @@ const ProductDetail = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${
-                            i < Math.floor(product.rating)
-                              ? "text-champagne fill-current"
-                              : "text-muted"
-                          }`}
+                          className={`h-4 w-4 ${i < Math.floor(product.rating)
+                            ? "text-champagne fill-current"
+                            : "text-muted"
+                            }`}
                         />
                       ))}
                     </div>
@@ -318,7 +317,7 @@ const ProductDetail = () => {
                       <Heart className="h-5 w-5" />
                     </Button>
                     <Button variant="luxury-outline" size="icon" className="h-14 w-14">
-                      <Share2 className.tsx="h-5 w-5" />
+                      <Share2 className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
