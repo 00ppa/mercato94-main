@@ -27,8 +27,9 @@ const Login = () => {
       // Redirect based on role could be added here
       // For now, redirect to dashboard
       navigate("/dashboard");
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Login failed. Please try again.";
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const message = error.response?.data?.message || "Login failed. Please try again.";
       setError(message);
     } finally {
       setIsSubmitting(false);

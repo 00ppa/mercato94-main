@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -17,9 +18,9 @@ const buttonVariants = cva(
           "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground rounded-md",
         secondary:
           "bg-secondary text-secondary-foreground shadow-subtle hover:bg-secondary/80 rounded-md",
-        ghost: 
+        ghost:
           "hover:bg-secondary hover:text-secondary-foreground rounded-md",
-        link: 
+        link:
           "text-foreground underline-offset-4 hover:underline",
         // Midnight Sapphire variants
         sapphire:
@@ -60,7 +61,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 

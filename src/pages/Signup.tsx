@@ -48,8 +48,9 @@ const Signup = () => {
       } else {
         navigate("/purchases");
       }
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Registration failed. Please try again.";
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const message = error.response?.data?.message || "Registration failed. Please try again.";
       setError(message);
     } finally {
       setIsSubmitting(false);

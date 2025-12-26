@@ -20,7 +20,32 @@ import uiKit from "@/assets/products/ui-kit.png";
 import courseBundle from "@/assets/products/course-bundle.png";
 import { toast } from "sonner";
 
-const products: Record<string, any> = {
+interface Product {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  fullDescription: string;
+  price: number;
+  currency: string;
+  seller: {
+    name: string;
+    avatar: string;
+    verified: boolean;
+    products: number;
+    sales: number;
+  };
+  images: string[];
+  badge: string;
+  category: string;
+  rating: number;
+  sales: number;
+  reviews: number;
+  includes: string[];
+  tags: string[];
+}
+
+const products: Record<string, Product> = {
   "modern-ebook-template": {
     id: "1",
     title: "Modern E-Book Template",

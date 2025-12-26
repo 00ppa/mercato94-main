@@ -144,11 +144,12 @@ const Profile = () => {
                 description: "Click 'Save Changes' to update your profile.",
             });
 
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Avatar upload error:', err);
+            const error = err as { response?: { data?: { message?: string } } };
             toast({
                 title: "Upload Failed",
-                description: err.response?.data?.message || "Could not upload avatar.",
+                description: error.response?.data?.message || "Could not upload avatar.",
                 variant: "destructive",
             });
         } finally {
@@ -167,15 +168,16 @@ const Profile = () => {
         setIsSubmitting(true);
 
         try {
-            await updateProfile(formData as any);
+            await updateProfile(formData);
             toast({
                 title: "Profile Updated",
                 description: "Your profile has been updated successfully.",
             });
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string } } };
             toast({
                 title: "Update Failed",
-                description: err.response?.data?.message || "Could not update profile.",
+                description: error.response?.data?.message || "Could not update profile.",
                 variant: "destructive",
             });
         } finally {
@@ -224,8 +226,9 @@ const Profile = () => {
                 confirmPassword: "",
             });
 
-        } catch (err: any) {
-            const message = err.response?.data?.message || "Failed to change password.";
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string } } };
+            const message = error.response?.data?.message || "Failed to change password.";
             setPasswordError(message);
         } finally {
             setIsChangingPassword(false);
