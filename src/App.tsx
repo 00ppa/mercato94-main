@@ -19,6 +19,7 @@ import Signup from "./pages/Signup";
 import SellerDashboard from "./pages/SellerDashboard";
 import BuyerDashboard from "./pages/BuyerDashboard";
 import Profile from "./pages/Profile";
+import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
 import Legal from "./pages/Legal";
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/dashboard" element={<SellerDashboard />} />
               <Route path="/purchases" element={<BuyerDashboard />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/403" element={<Forbidden />} />
               <Route path="/legal" element={<Legal />} />
               <Route path="/terms" element={<Terms />} />

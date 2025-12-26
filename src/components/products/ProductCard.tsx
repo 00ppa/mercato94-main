@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, ShoppingCart, Star } from "lucide-react";
+import { Eye, ShoppingCart, Star, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useWishlistStore } from "@/store/wishlistStore";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   product: {
@@ -33,12 +35,42 @@ const badgeVariants: Record<string, string> = {
 };
 
 export function ProductCard({ product, className, style }: ProductCardProps) {
+  const { isInWishlist, toggleWishlist } = useWishlistStore();
+  const inWishlist = isInWishlist(product.id);
+
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: currency,
       minimumFractionDigits: 0,
     }).format(price / 100);
+  };
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const wasAdded = toggleWishlist({
+      id: product.id,
+      title: product.title,
+      slug: product.slug,
+      price: product.price,
+      currency: product.currency,
+      image: product.image,
+      seller: product.seller,
+      category: product.category,
+      rating: product.rating,
+    });
+
+    if (wasAdded) {
+      toast.success("Added to wishlist", {
+        description: `${product.title} saved to your wishlist`,
+      });
+    } else {
+      toast.info("Removed from wishlist", {
+        description: `${product.title} removed from your wishlist`,
+      });
+    }
   };
 
   return (
@@ -71,6 +103,21 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
             </Badge>
           </div>
         )}
+
+        {/* Wishlist button - always visible */}
+        <button
+          onClick={handleWishlistClick}
+          className={cn(
+            "absolute top-4 right-4 h-9 w-9 rounded-full flex items-center justify-center transition-all duration-300",
+            inWishlist
+              ? "bg-red-500 text-white"
+              : "bg-midnight-light/80 text-cream/70 hover:bg-midnight-light hover:text-cream backdrop-blur-sm"
+          )}
+        >
+          <Heart
+            className={cn("h-4 w-4", inWishlist && "fill-current")}
+          />
+        </button>
 
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 via-midnight/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

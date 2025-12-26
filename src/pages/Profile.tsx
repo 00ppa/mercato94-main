@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, User, Mail, Camera, Save, ArrowLeft, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { EmailPreferences } from "@/components/settings/EmailPreferences";
 import api from "@/lib/api";
 
 const Profile = () => {
@@ -546,6 +547,11 @@ const Profile = () => {
                                         )}
                                     </Button>
                                 </form>
+                            </div>
+
+                            {/* Email Preferences Card */}
+                            <div className="glass-card-elevated p-8">
+                                <EmailPreferences />
                             </div>
                         </div>
                     </div>

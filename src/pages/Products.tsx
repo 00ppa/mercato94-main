@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/products/ProductCard";
 import { SemanticSearchBar } from "@/components/products/SemanticSearchBar";
+import { FilterPanel, FilterState, defaultFilters } from "@/components/products/FilterPanel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
-import { SlidersHorizontal, Sparkles } from "lucide-react";
 import ebookTemplate from "@/assets/products/ebook-template.png";
 import uiKit from "@/assets/products/ui-kit.png";
 import courseBundle from "@/assets/products/course-bundle.png";
@@ -37,6 +36,7 @@ const allProducts = [
     category: "Templates",
     rating: 4.9,
     sales: 342,
+    createdAt: new Date("2024-01-15"),
   },
   {
     id: "2",
@@ -54,6 +54,7 @@ const allProducts = [
     category: "UI Kits",
     rating: 4.8,
     sales: 189,
+    createdAt: new Date("2024-03-20"),
   },
   {
     id: "3",
@@ -71,6 +72,7 @@ const allProducts = [
     category: "Courses",
     rating: 5.0,
     sales: 567,
+    createdAt: new Date("2024-02-10"),
   },
   {
     id: "4",
@@ -88,6 +90,7 @@ const allProducts = [
     category: "Templates",
     rating: 4.7,
     sales: 156,
+    createdAt: new Date("2024-04-05"),
   },
   {
     id: "5",
@@ -105,6 +108,7 @@ const allProducts = [
     category: "UI Kits",
     rating: 4.9,
     sales: 298,
+    createdAt: new Date("2024-01-25"),
   },
   {
     id: "6",
@@ -122,21 +126,62 @@ const allProducts = [
     category: "Courses",
     rating: 4.8,
     sales: 421,
+    createdAt: new Date("2024-02-28"),
   },
 ];
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [filters, setFilters] = useState<FilterState>(defaultFilters);
 
-  const filteredProducts = allProducts.filter((product) => {
-    const matchesSearch = product.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredProducts = useMemo(() => {
+    let result = allProducts.filter((product) => {
+      // Text search
+      const matchesSearch = product.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      // Category filter
+      const matchesCategory =
+        selectedCategory === "All" || product.category === selectedCategory;
+
+      // Price range filter (prices are in paise, convert to rupees for comparison)
+      const priceInRupees = product.price / 100;
+      const matchesPrice =
+        priceInRupees >= filters.priceRange[0] &&
+        priceInRupees <= filters.priceRange[1];
+
+      // Rating filter
+      const matchesRating = product.rating >= filters.minRating;
+
+      return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+    });
+
+    // Sort results
+    switch (filters.sortBy) {
+      case "price-asc":
+        result = [...result].sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        result = [...result].sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        result = [...result].sort((a, b) => b.rating - a.rating);
+        break;
+      case "sales":
+        result = [...result].sort((a, b) => b.sales - a.sales);
+        break;
+      case "newest":
+      default:
+        result = [...result].sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        );
+        break;
+    }
+
+    return result;
+  }, [searchQuery, selectedCategory, filters]);
 
   return (
     <>
@@ -197,10 +242,11 @@ const Products = () => {
               <p className="text-muted-foreground">
                 Showing {filteredProducts.length} products
               </p>
-              <Button variant="ghost" size="sm">
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
+              <FilterPanel
+                filters={filters}
+                onFiltersChange={setFilters}
+                maxPrice={10000}
+              />
             </div>
 
             {/* Grid */}
@@ -225,6 +271,7 @@ const Products = () => {
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategory("All");
+                    setFilters(defaultFilters);
                   }}
                 >
                   Clear filters
@@ -239,3 +286,4 @@ const Products = () => {
 };
 
 export default Products;
+

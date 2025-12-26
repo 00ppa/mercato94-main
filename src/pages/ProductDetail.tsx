@@ -15,6 +15,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import { useReviewsStore } from "@/store/reviewsStore";
+import { useAuth } from "@/contexts/AuthContext";
+import { ReviewCard } from "@/components/reviews/ReviewCard";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
 import ebookTemplate from "@/assets/products/ebook-template.png";
 import uiKit from "@/assets/products/ui-kit.png";
 import courseBundle from "@/assets/products/course-bundle.png";
@@ -165,6 +169,75 @@ const products: Record<string, Product> = {
     ],
     tags: ["course", "design", "ui-ux", "learning", "professional"],
   },
+};
+
+// Reviews Section Component
+const ReviewsSection = ({ productId }: { productId: string }) => {
+  const { user } = useAuth();
+  const { addReview, getProductReviews, hasUserReviewed } = useReviewsStore();
+  const reviews = getProductReviews(productId);
+  const userId = user ? String(user.id) : "";
+  const userHasReviewed = user ? hasUserReviewed(productId, userId) : false;
+
+  const handleSubmitReview = (rating: number, comment: string) => {
+    if (!user) {
+      toast.error("Please log in to leave a review");
+      return;
+    }
+
+    addReview({
+      productId,
+      userId: String(user.id),
+      userName: user.display_name || user.name || "Anonymous",
+      userAvatar: user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
+      rating,
+      comment,
+    });
+
+    toast.success("Review submitted!", {
+      description: "Thank you for your feedback",
+    });
+  };
+
+  return (
+    <div className="mt-16 pt-16 border-t border-border">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="heading-medium">Customer Reviews</h2>
+        <span className="text-muted-foreground">
+          {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+        </span>
+      </div>
+
+      {/* Review Form */}
+      {user && !userHasReviewed ? (
+        <div className="mb-8 p-6 rounded-lg bg-secondary/30 border border-border">
+          <h3 className="font-medium mb-4">Write a Review</h3>
+          <ReviewForm onSubmit={handleSubmitReview} />
+        </div>
+      ) : userHasReviewed ? (
+        <div className="mb-8 p-4 rounded-lg bg-champagne/10 border border-champagne/20 text-sm">
+          ✓ You've already reviewed this product
+        </div>
+      ) : (
+        <div className="mb-8 p-4 rounded-lg bg-secondary/30 border border-border text-sm text-muted-foreground">
+          <a href="/login" className="text-champagne hover:underline">Log in</a> to leave a review
+        </div>
+      )}
+
+      {/* Reviews List */}
+      {reviews.length > 0 ? (
+        <div className="space-y-4">
+          {reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center py-8 text-muted-foreground">
+          No reviews yet. Be the first to review this product!
+        </p>
+      )}
+    </div>
+  );
 };
 
 const ProductDetail = () => {
@@ -423,6 +496,9 @@ const ProductDetail = () => {
                 </Badge>
               ))}
             </div>
+
+            {/* Customer Reviews Section */}
+            <ReviewsSection productId={product.id} />
           </div>
         </section>
       </Layout>
