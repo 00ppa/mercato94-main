@@ -1,6 +1,6 @@
 
 import { products } from '@/data/products';
-import ProductCard from '../ProductCard';
+import { ProductCard } from '@/components/products/ProductCard';
 
 export default function FeaturedProducts() {
   const featuredProducts = products.filter((product) => product.isFeatured);

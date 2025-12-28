@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { Hero } from "@/components/home/Hero";
-import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
 import { Categories } from "@/components/home/Categories";
 import { SellerCTA } from "@/components/home/SellerCTA";
 import { Testimonials } from "@/components/home/Testimonials";

@@ -30,3 +30,5 @@ Database/Log Files
 Testing/Coverage (if testing frameworks are added later)
 
 /coverage
+node_modules
+

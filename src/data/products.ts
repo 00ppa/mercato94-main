@@ -1,115 +1,140 @@
 
 export interface Product {
   id: string;
-  name: string;
+  title: string;
+  slug: string;
   description: string;
   price: number;
+  currency: string;
   image: string;
-  seller: string;
+  seller: {
+    name: string;
+    avatar: string;
+  };
   category: string;
   isFeatured: boolean;
+  badge?: string;
   rating: number;
-  numReviews: number;
+  sales: number;
 }
 
 export const products: Product[] = [
   {
     id: '1',
-    name: 'Elegant Ebook Template',
+    title: 'Elegant Ebook Template',
+    slug: 'elegant-ebook-template',
     description:
       'A professionally designed ebook template to make your content shine.',
-    price: 49,
+    price: 4900,
+    currency: 'USD',
     image: '/src/assets/products/ebook-template.png',
-    seller: 'DesignSource',
+    seller: { name: 'DesignSource', avatar: '' },
     category: 'Templates',
     isFeatured: true,
+    badge: 'Featured',
     rating: 4.8,
-    numReviews: 124,
+    sales: 124,
   },
   {
     id: '2',
-    name: 'Minimalist UI Kit',
+    title: 'Minimalist UI Kit',
+    slug: 'minimalist-ui-kit',
     description:
       'A comprehensive UI kit for designing clean and modern interfaces.',
-    price: 79,
+    price: 7900,
+    currency: 'USD',
     image: '/src/assets/products/ui-kit.png',
-    seller: 'PixelPerfect',
+    seller: { name: 'PixelPerfect', avatar: '' },
     category: 'UI Kits',
     isFeatured: true,
+    badge: 'Bestseller',
     rating: 4.9,
-    numReviews: 245,
+    sales: 245,
   },
   {
     id: '3',
-    name: 'Pro Course Bundle',
+    title: 'Pro Course Bundle',
+    slug: 'pro-course-bundle',
     description:
       'Unlock your potential with our complete bundle of professional courses.',
-    price: 199,
+    price: 19900,
+    currency: 'USD',
     image: '/src/assets/products/course-bundle.png',
-    seller: 'Learnify',
+    seller: { name: 'Learnify', avatar: '' },
     category: 'Courses',
     isFeatured: true,
+    badge: 'New',
     rating: 4.7,
-    numReviews: 89,
+    sales: 89,
   },
-    {
+  {
     id: '4',
-    name: 'Social Media Pack',
+    title: 'Social Media Pack',
+    slug: 'social-media-pack',
     description: 'A huge pack of social media templates for all platforms.',
-    price: 39,
-    image: '/public/placeholder.svg',
-    seller: 'SocialSavvy',
+    price: 3900,
+    currency: 'USD',
+    image: '/placeholder.svg',
+    seller: { name: 'SocialSavvy', avatar: '' },
     category: 'Templates',
     isFeatured: false,
     rating: 4.6,
-    numReviews: 97,
+    sales: 97,
   },
   {
     id: '5',
-    name: 'Web Development Bootcamp',
+    title: 'Web Development Bootcamp',
+    slug: 'web-development-bootcamp',
     description: 'A complete bootcamp to become a full-stack web developer.',
-    price: 299,
-    image: '/public/placeholder.svg',
-    seller: 'CodeMaster',
+    price: 29900,
+    currency: 'USD',
+    image: '/placeholder.svg',
+    seller: { name: 'CodeMaster', avatar: '' },
     category: 'Courses',
     isFeatured: false,
     rating: 4.9,
-    numReviews: 412,
+    sales: 412,
   },
   {
     id: '6',
-    name: 'Mobile App UI Kit',
+    title: 'Mobile App UI Kit',
+    slug: 'mobile-app-ui-kit',
     description: 'A stunning UI kit for designing beautiful mobile apps.',
-    price: 69,
-    image: '/public/placeholder.svg',
-    seller: 'AppDesignCo',
+    price: 6900,
+    currency: 'USD',
+    image: '/placeholder.svg',
+    seller: { name: 'AppDesignCo', avatar: '' },
     category: 'UI Kits',
     isFeatured: false,
     rating: 4.8,
-    numReviews: 156,
+    sales: 156,
   },
   {
     id: '7',
-    name: 'Photography Masterclass',
+    title: 'Photography Masterclass',
+    slug: 'photography-masterclass',
     description: 'Learn the art of photography from industry professionals.',
-    price: 149,
-    image: '/public/placeholder.svg',
-    seller: 'PhotoPro',
+    price: 14900,
+    currency: 'USD',
+    image: '/placeholder.svg',
+    seller: { name: 'PhotoPro', avatar: '' },
     category: 'Courses',
     isFeatured: false,
     rating: 4.7,
-    numReviews: 72,
+    sales: 72,
   },
   {
     id: '8',
-    name: 'Branding Identity Kit',
+    title: 'Branding Identity Kit',
+    slug: 'branding-identity-kit',
     description: 'Everything you need to create a powerful brand identity.',
-    price: 99,
-    image: '/public/placeholder.svg',
-    seller: 'BrandBuilders',
+    price: 9900,
+    currency: 'USD',
+    image: '/placeholder.svg',
+    seller: { name: 'BrandBuilders', avatar: '' },
     category: 'Templates',
     isFeatured: false,
     rating: 4.9,
-    numReviews: 189,
+    sales: 189,
   },
 ];

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatCard } from "@/components/admin/StatCard";
-import { mockKPIs } from "@/data/mockAdminData";
 import { DollarSign, ShoppingCart, Users, AlertTriangle, Package, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -160,8 +159,8 @@ export default function AdminDashboard() {
         />
         <StatCard
           title="Open Disputes"
-          value={mockKPIs.openDisputes}
-          change={mockKPIs.disputesChange}
+          value="0"
+          change="No disputes"
           icon={AlertTriangle}
           iconColor="text-amber-400"
         />
