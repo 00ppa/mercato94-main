@@ -38,6 +38,8 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Cookie = lazy(() => import("./pages/Cookie"));
 const Refund = lazy(() => import("./pages/Refund"));
+const Legal = lazy(() => import("./pages/Legal"));
+const License = lazy(() => import("./pages/License"));
 
 // Admin Pages
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
@@ -97,6 +99,8 @@ const App = () => (
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookie" element={<Cookie />} />
                 <Route path="/refund" element={<Refund />} />
+                <Route path="/legal" element={<Legal />} />
+                <Route path="/license" element={<License />} />
 
                 {/* Admin Routes - Protected */}
                 <Route
