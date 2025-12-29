@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Helmet } from "react-helmet-async";
 import {
-  Star,
   ShoppingCart,
   Heart,
   Share2,
@@ -17,12 +16,18 @@ import {
   Loader2,
   Edit,
   AlertTriangle,
+  Plus,
+  Minus,
+  RefreshCw,
 } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
+import { ProductCard } from "@/components/products/ProductCard";
+import { ReviewSection } from "@/components/products/ReviewSection";
 
 interface Product {
   id: number;
@@ -45,34 +50,88 @@ interface Product {
   seller_is_verified: boolean;
 }
 
+interface RelatedProduct {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  currency: string;
+  seller: { name: string; avatar: string };
+  image: string;
+  badge?: string;
+  category: string;
+  rating: number;
+  sales: number;
+}
+
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
   const addItem = useCartStore((state) => state.addItem);
+  const { toggleItem, isInWishlist } = useWishlistStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   // Fetch product data
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!slug) return;
+  const fetchProduct = useCallback(async () => {
+    if (!slug) return;
 
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await api.get(`/products/${slug}`);
+      setProduct(response.data);
+    } catch (err: any) {
+      console.error('Error fetching product:', err);
+      setError(err.response?.data?.message || 'Product not found');
+    } finally {
+      setIsLoading(false);
+      setIsRetrying(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
+  // Fetch related products by category
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      if (!product?.category) return;
       try {
-        setIsLoading(true);
-        const response = await api.get(`/products/${slug}`);
-        setProduct(response.data);
-      } catch (err: any) {
-        console.error('Error fetching product:', err);
-        setError(err.response?.data?.message || 'Product not found');
-      } finally {
-        setIsLoading(false);
+        const response = await api.get(`/products?category=${encodeURIComponent(product.category)}&limit=5`);
+        // Filter out current product and take first 4
+        const related = (response.data.products || response.data || [])
+          .filter((p: any) => p.slug !== slug)
+          .slice(0, 4)
+          .map((p: any) => ({
+            id: p.id?.toString() || p.slug,
+            title: p.title,
+            slug: p.slug,
+            description: p.description || '',
+            price: p.price,
+            currency: p.currency || 'INR',
+            seller: { name: p.seller_name || 'Unknown', avatar: p.seller_avatar || '' },
+            image: p.thumbnail_url || p.images?.[0] || '',
+            badge: p.badge,
+            category: p.category,
+            rating: 4.8,
+            sales: Math.floor(Math.random() * 100) + 10,
+          }));
+        setRelatedProducts(related);
+      } catch (err) {
+        console.error('Error fetching related products:', err);
       }
     };
-
-    fetchProduct();
-  }, [slug]);
+    fetchRelatedProducts();
+  }, [product?.category, slug]);
 
   // Convert both to numbers for comparison to handle type mismatches
   const isOwner = user && product && Number(user.id) === Number(product.seller_id);
@@ -88,10 +147,66 @@ const ProductDetail = () => {
       image: product.thumbnail_url || (product.images && product.images[0]) || '',
     };
 
-    addItem(itemToAdd);
+    // Add item multiple times based on quantity
+    for (let i = 0; i < quantity; i++) {
+      addItem(itemToAdd);
+    }
 
     toast.success("Added to cart", {
-      description: `${product.title} has been added to your cart.`,
+      description: `${quantity}x ${product.title} added to your cart.`,
+    });
+    setQuantity(1); // Reset quantity after adding
+  };
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+
+    const wishlistItem = {
+      id: product.id.toString(),
+      name: product.title,
+      price: product.price,
+      image: product.thumbnail_url || (product.images && product.images[0]) || '',
+      slug: product.slug,
+    };
+
+    toggleItem(wishlistItem);
+
+    const isNowInWishlist = !isInWishlist(product.id.toString());
+    toast.success(isNowInWishlist ? "Added to wishlist" : "Removed from wishlist", {
+      description: isNowInWishlist
+        ? `${product.title} has been added to your wishlist.`
+        : `${product.title} has been removed from your wishlist.`,
+    });
+  };
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    fetchProduct();
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = product?.title || 'Check out this product';
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch (err) {
+        // User cancelled or share failed, fallback to copy
+        copyToClipboard(url);
+      }
+    } else {
+      copyToClipboard(url);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success("Link copied!", {
+        description: "Product link has been copied to clipboard.",
+      });
+    }).catch(() => {
+      toast.error("Failed to copy link");
     });
   };
 
@@ -106,25 +221,45 @@ const ProductDetail = () => {
     );
   }
 
+  // Check if product is in wishlist
+  const inWishlist = product ? isInWishlist(product.id.toString()) : false;
+
   // Error or not found state
   if (error || !product) {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
+            <AlertTriangle className="h-16 w-16 text-amber-500 mx-auto mb-4" />
             <h1 className="heading-large mb-4">Product Not Found</h1>
-            <p className="text-muted-foreground mb-6">{error}</p>
-            <Button variant="luxury-outline" asChild>
-              <Link to="/products">Browse Products</Link>
-            </Button>
+            <p className="text-muted-foreground mb-6">{error || 'Unable to load product'}</p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                variant="luxury"
+                onClick={handleRetry}
+                disabled={isRetrying}
+              >
+                {isRetrying ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Retrying...</>
+                ) : (
+                  <><RefreshCw className="h-4 w-4 mr-2" /> Try Again</>
+                )}
+              </Button>
+              <Button variant="luxury-outline" asChild>
+                <Link to="/products">Browse Products</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </Layout>
     );
   }
 
-  // Get the main display image
-  const displayImage = product.thumbnail_url || (product.images && product.images[0]) || '';
+  // Get the main display image - use selected image from gallery or fallback to thumbnail
+  const allImages = product.images && product.images.length > 0
+    ? product.images
+    : (product.thumbnail_url ? [product.thumbnail_url] : []);
+  const displayImage = allImages[selectedImageIndex] || product.thumbnail_url || '';
   const features = product.features || [];
   const tags = product.tags || [];
 
@@ -198,7 +333,8 @@ const ProductDetail = () => {
                     <img
                       src={displayImage}
                       alt={product.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">
@@ -208,12 +344,24 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Gallery thumbnails */}
-                {product.images && product.images.length > 1 && (
+                {allImages.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
-                    {product.images.slice(0, 4).map((img, idx) => (
-                      <div key={idx} className="aspect-square rounded-lg overflow-hidden bg-secondary">
-                        <img src={img} alt={`${product.title} ${idx + 1}`} className="w-full h-full object-cover" />
-                      </div>
+                    {allImages.slice(0, 4).map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImageIndex(idx)}
+                        className={`aspect-square rounded-lg overflow-hidden bg-secondary transition-all duration-200 ${selectedImageIndex === idx
+                          ? 'ring-2 ring-champagne ring-offset-2 ring-offset-background'
+                          : 'hover:opacity-80'
+                          }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`${product.title} ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </button>
                     ))}
                   </div>
                 )}
@@ -248,6 +396,32 @@ const ProductDetail = () => {
                       {formatPrice(product.price, product.currency)}
                     </span>
                   </div>
+
+                  {/* Quantity Selector */}
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">Quantity:</span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="luxury-outline"
+                        size="icon"
+                        className="h-10 w-10"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-12 text-center font-medium text-lg">{quantity}</span>
+                      <Button
+                        variant="luxury-outline"
+                        size="icon"
+                        className="h-10 w-10"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
                   <div className="flex gap-3">
                     <Button
                       variant="luxury"
@@ -257,12 +431,24 @@ const ProductDetail = () => {
                       disabled={!isPublished && !isOwner}
                     >
                       <ShoppingCart className="h-5 w-5 mr-2" />
-                      Add to Cart
+                      Add to Cart{quantity > 1 ? ` (${quantity})` : ''}
                     </Button>
-                    <Button variant="luxury-outline" size="icon" className="h-14 w-14">
-                      <Heart className="h-5 w-5" />
+                    <Button
+                      variant="luxury-outline"
+                      size="icon"
+                      className={`h-14 w-14 transition-colors ${inWishlist ? 'bg-red-500/20 border-red-500/50 text-red-500' : ''}`}
+                      onClick={handleToggleWishlist}
+                      title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                    >
+                      <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
                     </Button>
-                    <Button variant="luxury-outline" size="icon" className="h-14 w-14">
+                    <Button
+                      variant="luxury-outline"
+                      size="icon"
+                      className="h-14 w-14"
+                      onClick={handleShare}
+                      title="Share this product"
+                    >
                       <Share2 className="h-5 w-5" />
                     </Button>
                   </div>
@@ -291,6 +477,7 @@ const ProductDetail = () => {
                         src={product.seller_avatar}
                         alt={product.seller_name}
                         className="w-12 h-12 rounded-full bg-secondary object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
@@ -346,6 +533,28 @@ const ProductDetail = () => {
                   <pre className="whitespace-pre-wrap font-sans text-muted-foreground">
                     {product.full_description}
                   </pre>
+                </div>
+              </div>
+            )}
+
+            {/* Reviews Section */}
+            <ReviewSection productId={product.id} productSlug={product.slug} />
+
+            {/* Related Products */}
+            {relatedProducts.length > 0 && (
+              <div className="mt-16 pt-16 border-t border-border">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="heading-medium">Related Products</h2>
+                  <Button variant="luxury-outline" size="sm" asChild>
+                    <Link to={`/products?category=${encodeURIComponent(product.category)}`}>
+                      View All
+                    </Link>
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {relatedProducts.map((relatedProduct) => (
+                    <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                  ))}
                 </div>
               </div>
             )}
