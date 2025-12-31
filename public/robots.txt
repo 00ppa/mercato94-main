@@ -1,3 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://94mercato.com/sitemap.xml
+
+# Social media bots
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +18,17 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile
+Disallow: /purchases
+Disallow: /purchase/
+Disallow: /403
+
+# Allow crawling of products and public pages
+Allow: /products/
+Allow: /seller/
+Allow: /about
+Allow: /contact
+Allow: /sell

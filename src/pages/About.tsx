@@ -29,12 +29,12 @@ const team = [
   {
     name: "Jeroen Benny",
     role: "Founder",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jeroen&topType=ShortHairShortFlat&facialHairType=BeardLight",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=JeroenBoss2024&topType=ShortHairShortFlat&hairColor=2c1b18&skinColor=d08b5b&facialHairType=MoustacheFancy&facialHairColor=2c1b18&clotheType=BlazerSweater&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Serious&accessoriesType=Blank",
   },
   {
     name: "Farhan",
     role: "COO",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Farhan&topType=ShortHairFrizzle&facialHairType=MoustacheMagnum",
+    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=FarhanCOO&topType=ShortHairShortFlat&hairColor=1c1c1c&skinColor=c68642&facialHairType=BeardLight&facialHairColor=1c1c1c&clotheType=BlazerShirt&eyeType=Happy&eyebrowType=RaisedExcited&mouthType=Twinkle",
   },
 ];
 
@@ -132,9 +132,8 @@ const About = () => {
               {values.map((value, index) => (
                 <div
                   key={value.title}
-                  className={`glass-card-elevated p-6 md:p-8 text-center animate-fade-up delay-${
-                    (index + 1) * 100
-                  }`}
+                  className={`glass-card-elevated p-6 md:p-8 text-center animate-fade-up delay-${(index + 1) * 100
+                    }`}
                 >
                   <div className="w-16 h-16 rounded-full bg-champagne/10 flex items-center justify-center mx-auto mb-6">
                     <value.icon className="h-7 w-7 text-champagne" />
@@ -169,9 +168,8 @@ const About = () => {
               {team.map((member, index) => (
                 <div
                   key={member.name}
-                  className={`text-center animate-fade-up delay-${
-                    (index + 1) * 100
-                  }`}
+                  className={`text-center animate-fade-up delay-${(index + 1) * 100
+                    }`}
                 >
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-secondary mx-auto mb-4 overflow-hidden">
                     <img

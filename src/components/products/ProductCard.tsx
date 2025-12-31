@@ -75,6 +75,8 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
         <img
           src={product.image}
           alt={product.title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
@@ -153,6 +155,8 @@ export function ProductCard({ product, className, style }: ProductCardProps) {
               <img
                 src={product.seller.avatar}
                 alt={product.seller.name}
+                loading="lazy"
+                decoding="async"
                 className="w-6 h-6 rounded-full bg-midnight border border-sapphire/30 object-cover"
               />
             ) : (
