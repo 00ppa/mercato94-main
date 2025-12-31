@@ -28,6 +28,7 @@ import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
 import { ReviewSection } from "@/components/products/ReviewSection";
+import { SocialShare } from "@/components/products/SocialShare";
 
 interface Product {
   id: number;
@@ -271,6 +272,33 @@ const ProductDetail = () => {
         <meta property="og:title" content={product.title} />
         <meta property="og:description" content={product.description} />
         {displayImage && <meta property="og:image" content={displayImage} />}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "description": product.description,
+            "image": displayImage || undefined,
+            "category": product.category,
+            "brand": {
+              "@type": "Brand",
+              "name": product.seller_name
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://94mercato.com/products/${product.slug}`,
+              "priceCurrency": product.currency || "INR",
+              "price": product.price,
+              "availability": isPublished
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+              "seller": {
+                "@type": "Organization",
+                "name": product.seller_name
+              }
+            }
+          })}
+        </script>
       </Helmet>
       <Layout>
         {/* Owner/Status Banner - pt-20 for fixed header offset */}
@@ -521,6 +549,15 @@ const ProductDetail = () => {
                     <Clock className="h-4 w-4" />
                     24/7 Support
                   </div>
+                </div>
+
+                {/* Social Share */}
+                <div className="pt-4 border-t border-border">
+                  <SocialShare
+                    url={`https://94mercato.com/products/${product.slug}`}
+                    title={product.title}
+                    description={product.description}
+                  />
                 </div>
               </div>
             </div>

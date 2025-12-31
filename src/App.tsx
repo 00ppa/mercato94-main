@@ -8,6 +8,9 @@ import { HelmetProvider } from "react-helmet-async";
 import { AIAssistantWidget } from "@/components/ai/AIAssistantWidget";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RequireAdmin } from "@/components/admin/RequireAdmin";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { CookieConsent } from "@/components/ui/CookieConsent";
+import { BackToTop } from "@/components/ui/BackToTop";
 
 // Eagerly load Index for fast initial render
 import Index from "./pages/Index";
@@ -30,6 +33,7 @@ const SellerProfile = lazy(() => import("./pages/SellerProfile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Forbidden = lazy(() => import("./pages/Forbidden"));
 const Cart = lazy(() => import("./pages/Cart"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCancel = lazy(() => import("./pages/PaymentCancel"));
 
@@ -64,120 +68,125 @@ const PageLoader = () => (
 );
 
 const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/:slug" element={<ProductDetail />} />
-                <Route path="/sell" element={<Sell />} />
-                <Route path="/sell/onboarding" element={<SellerOnboarding />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<SellerDashboard />} />
-                <Route path="/dashboard/upload" element={<DashboardUpload />} />
-                <Route path="/dashboard/edit/:productId" element={<ProductEdit />} />
-                <Route path="/purchases" element={<BuyerDashboard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/seller/:displayName" element={<SellerProfile />} />
-                <Route path="/403" element={<Forbidden />} />
-                <Route path="/purchase/success" element={<PaymentSuccess />} />
-                <Route path="/purchase/cancel" element={<PaymentCancel />} />
+  <ErrorBoundary>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:slug" element={<ProductDetail />} />
+                  <Route path="/sell" element={<Sell />} />
+                  <Route path="/sell/onboarding" element={<SellerOnboarding />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/dashboard" element={<SellerDashboard />} />
+                  <Route path="/dashboard/upload" element={<DashboardUpload />} />
+                  <Route path="/dashboard/edit/:productId" element={<ProductEdit />} />
+                  <Route path="/purchases" element={<BuyerDashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/seller/:displayName" element={<SellerProfile />} />
+                  <Route path="/403" element={<Forbidden />} />
+                  <Route path="/purchase/success" element={<PaymentSuccess />} />
+                  <Route path="/purchase/cancel" element={<PaymentCancel />} />
 
-                {/* Legal Routes */}
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/cookie" element={<Cookie />} />
-                <Route path="/refund" element={<Refund />} />
-                <Route path="/legal" element={<Legal />} />
-                <Route path="/license" element={<License />} />
+                  {/* Legal Routes */}
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/cookie" element={<Cookie />} />
+                  <Route path="/refund" element={<Refund />} />
+                  <Route path="/legal" element={<Legal />} />
+                  <Route path="/license" element={<License />} />
 
-                {/* Admin Routes - Protected */}
-                <Route
-                  path="/admin"
-                  element={
-                    <RequireAdmin>
-                      <AdminDashboard />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/users"
-                  element={
-                    <RequireAdmin>
-                      <AdminUsers />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/products"
-                  element={
-                    <RequireAdmin>
-                      <AdminProducts />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/orders"
-                  element={
-                    <RequireAdmin>
-                      <AdminOrders />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/payouts"
-                  element={
-                    <RequireAdmin>
-                      <AdminPayouts />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/disputes"
-                  element={
-                    <RequireAdmin>
-                      <AdminDisputes />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/settings"
-                  element={
-                    <RequireAdmin>
-                      <AdminSettings />
-                    </RequireAdmin>
-                  }
-                />
-                <Route
-                  path="/admin/logs"
-                  element={
-                    <RequireAdmin>
-                      <AdminLogs />
-                    </RequireAdmin>
-                  }
-                />
+                  {/* Admin Routes - Protected */}
+                  <Route
+                    path="/admin"
+                    element={
+                      <RequireAdmin>
+                        <AdminDashboard />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <RequireAdmin>
+                        <AdminUsers />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <RequireAdmin>
+                        <AdminProducts />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <RequireAdmin>
+                        <AdminOrders />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/payouts"
+                    element={
+                      <RequireAdmin>
+                        <AdminPayouts />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/disputes"
+                    element={
+                      <RequireAdmin>
+                        <AdminDisputes />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/settings"
+                    element={
+                      <RequireAdmin>
+                        <AdminSettings />
+                      </RequireAdmin>
+                    }
+                  />
+                  <Route
+                    path="/admin/logs"
+                    element={
+                      <RequireAdmin>
+                        <AdminLogs />
+                      </RequireAdmin>
+                    }
+                  />
 
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-            <AIAssistantWidget />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+              <AIAssistantWidget />
+              <CookieConsent />
+              <BackToTop />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
+  </ErrorBoundary>
 );
 
 export default App;

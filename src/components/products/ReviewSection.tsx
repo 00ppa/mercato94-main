@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, User, Loader2 } from "lucide-react";
@@ -48,9 +48,9 @@ export function ReviewSection({ productId, productSlug }: ReviewSectionProps) {
     };
 
     // Load reviews on mount
-    useState(() => {
+    useEffect(() => {
         fetchReviews();
-    });
+    }, [productSlug]);
 
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -116,8 +116,8 @@ export function ReviewSection({ productId, productSlug }: ReviewSectionProps) {
                                     <Star
                                         key={star}
                                         className={`h-4 w-4 ${star <= Math.round(averageRating)
-                                                ? "text-champagne fill-champagne"
-                                                : "text-muted-foreground"
+                                            ? "text-champagne fill-champagne"
+                                            : "text-muted-foreground"
                                             }`}
                                     />
                                 ))}
@@ -150,8 +150,8 @@ export function ReviewSection({ productId, productSlug }: ReviewSectionProps) {
                                     >
                                         <Star
                                             className={`h-6 w-6 transition-colors ${star <= (hoverRating || rating)
-                                                    ? "text-champagne fill-champagne"
-                                                    : "text-muted-foreground"
+                                                ? "text-champagne fill-champagne"
+                                                : "text-muted-foreground"
                                                 }`}
                                         />
                                     </button>
@@ -242,8 +242,8 @@ export function ReviewSection({ productId, productSlug }: ReviewSectionProps) {
                                             <Star
                                                 key={star}
                                                 className={`h-4 w-4 ${star <= review.rating
-                                                        ? "text-champagne fill-champagne"
-                                                        : "text-muted-foreground"
+                                                    ? "text-champagne fill-champagne"
+                                                    : "text-muted-foreground"
                                                     }`}
                                             />
                                         ))}
