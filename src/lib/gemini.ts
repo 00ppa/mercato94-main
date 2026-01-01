@@ -33,24 +33,23 @@ export async function chatWithAssistant(
 ): Promise<string> {
     // If no API key, use fallback
     if (!genAI) {
+        console.log("No Gemini API key found, using fallback");
         return getFallbackResponse(message);
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        // Convert history to Gemini format
-        const chatHistory = history.map((msg) => ({
-            role: msg.role === "assistant" ? "model" : "user",
-            parts: [{ text: msg.content }],
-        }));
+        // Build the prompt with context
+        const contextPrompt = `${ASSISTANT_SYSTEM_PROMPT}
 
-        const chat = model.startChat({
-            history: chatHistory,
-            systemInstruction: ASSISTANT_SYSTEM_PROMPT,
-        });
+Previous conversation:
+${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`).join("\n")}
 
-        const result = await chat.sendMessage(message);
+User: ${message}
+Assistant:`;
+
+        const result = await model.generateContent(contextPrompt);
         const response = result.response.text();
 
         return response || getFallbackResponse(message);
@@ -78,7 +77,7 @@ export async function generateProductDescription(
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
         const prompt = `You are a copywriter for a premium digital marketplace. Generate product descriptions for a digital product.
 
@@ -126,7 +125,7 @@ export async function generateSmartTags(
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
         const prompt = `Generate 5-8 relevant search tags for this digital product. Return ONLY the tags separated by commas, nothing else.
 
