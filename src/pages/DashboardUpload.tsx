@@ -100,20 +100,31 @@ const DashboardUpload = () => {
     };
 
     // Generate AI description
-    const handleAIDescription = () => {
+    const handleAIDescription = async () => {
         if (!formData.title) {
             setUploadError("Enter a title first to generate a description");
             return;
         }
         setAiGenerating(true);
-        setTimeout(() => {
+        try {
+            const { generateProductDescription } = await import("@/lib/gemini");
+            const { short, full } = await generateProductDescription(formData.title, formData.category);
+            setFormData({
+                ...formData,
+                description: short,
+                full_description: full,
+            });
+        } catch (error) {
+            console.error("AI generation error:", error);
+            // Fallback to default description
             setFormData({
                 ...formData,
                 description: `A meticulously crafted ${formData.category.toLowerCase()} designed for modern creators.`,
                 full_description: `${formData.title} is a premium ${formData.category.toLowerCase()} designed for modern creators and professionals.\n\nThis product features high-quality assets, fully customizable layouts, and comprehensive documentation. Perfect for professionals seeking premium quality and attention to detail.\n\nWhat's included:\n• All source files\n• Documentation\n• Free updates\n• Premium support`,
             });
+        } finally {
             setAiGenerating(false);
-        }, 1500);
+        }
     };
 
     // Create product via API

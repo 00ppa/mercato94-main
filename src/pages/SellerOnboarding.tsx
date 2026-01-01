@@ -416,17 +416,30 @@ const SellerOnboarding = () => {
     }
   };
 
-  const handleAIDescription = () => {
+  const handleAIDescription = async () => {
     setAiGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
+    try {
+      const { generateProductDescription } = await import("@/lib/gemini");
+      const { short, full } = await generateProductDescription(
+        formData.productTitle || "Digital Product",
+        formData.productCategory
+      );
+      setFormData({
+        ...formData,
+        productDescription: short,
+        productFullDescription: full,
+      });
+    } catch (error) {
+      console.error("AI generation error:", error);
+      // Fallback to default description
       setFormData({
         ...formData,
         productDescription:
           "A meticulously crafted digital product designed for modern creators. Features include high-resolution assets, fully customizable layouts, and comprehensive documentation. Perfect for professionals seeking premium quality and attention to detail.",
       });
+    } finally {
       setAiGenerating(false);
-    }, 1500);
+    }
   };
 
   return (

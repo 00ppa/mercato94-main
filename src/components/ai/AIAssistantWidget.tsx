@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, X, Send, Sparkles } from "lucide-react";
+import { MessageSquare, X, Send, Sparkles, Loader2 } from "lucide-react";
+import { chatWithAssistant, isGeminiAvailable } from "@/lib/gemini";
 
 interface Message {
   id: string;
@@ -15,16 +16,10 @@ const suggestions = [
   "Can I use products commercially?",
 ];
 
-const cannedResponses: Record<string, string> = {
-    default: "I'm sorry, I can only answer questions about licenses, refunds, and commercial use at the moment. Please try one of the suggestions or contact support for other questions.",
-    license: "We offer two main licenses: a Standard License for personal or single commercial projects, and an Extended License for unlimited commercial projects. You can find more details on each product page.",
-    refund: "Due to the nature of digital products, we generally do not offer refunds. However, we will grant a refund if a file is corrupt, the product is misrepresented, or you received the wrong item. Please contact support@mercato94.com with your order number and a description of the issue to request a refund. You can view the complete policy on our Refund Policy page.",
-    commercial: "Yes, all our products can be used for commercial purposes. The Standard License covers one commercial project, while the Extended License allows for unlimited commercial projects. Thank you for asking!",
-};
-
 export function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -34,22 +29,8 @@ export function AIAssistantWidget() {
     },
   ]);
 
-  const getAIResponse = (userInput: string) => {
-    const lowerCaseInput = userInput.toLowerCase();
-    if (lowerCaseInput.includes("license")) {
-      return cannedResponses.license;
-    }
-    if (lowerCaseInput.includes("refund")) {
-        return cannedResponses.refund;
-    }
-    if (lowerCaseInput.includes("commercial")) {
-        return cannedResponses.commercial;
-    }
-    return cannedResponses.default;
-  }
-
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -57,20 +38,38 @@ export function AIAssistantWidget() {
       content: input,
     };
 
-    setMessages([...messages, userMessage]);
-    
-    const aiResponseContent = getAIResponse(input);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
+    setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Convert to history format (exclude the welcome message)
+      const history = updatedMessages.slice(1).map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+
+      // Get AI response
+      const responseContent = await chatWithAssistant(input, history.slice(0, -1));
+
       const response: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: aiResponseContent,
+        content: responseContent,
       };
       setMessages((prev) => [...prev, response]);
-    }, 1000);
+    } catch (error) {
+      console.error("Chat error:", error);
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I'm sorry, I encountered an error. Please try again or contact support@mercato94.com for assistance.",
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSuggestion = (suggestion: string) => {
@@ -119,21 +118,27 @@ export function AIAssistantWidget() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+              }`}
           >
             <div
-              className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${
-                message.role === "user"
-                  ? "bg-foreground text-background"
-                  : "bg-secondary text-foreground"
-              }`}
+              className={`max-w-[80%] px-4 py-2 rounded-lg text-sm ${message.role === "user"
+                ? "bg-foreground text-background"
+                : "bg-secondary text-foreground"
+                }`}
             >
               {message.content}
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="max-w-[80%] px-4 py-2 rounded-lg text-sm bg-secondary text-foreground flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Thinking...</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Suggestions */}
