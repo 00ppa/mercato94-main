@@ -21,7 +21,7 @@ const values = [
     icon: Shield,
     title: "Trust & Security",
     description:
-      "Secure payments, verified sellers, and buyer protection. We\'re building a foundation of trust.",
+      "Secure payments, verified sellers, and buyer protection. We're building a foundation of trust.",
   },
 ];
 
@@ -94,8 +94,8 @@ const About = () => {
                 <p className="text-muted-foreground">
                   In a world flooded with digital content, we curate. Every
                   product on our platform will meet our standards for quality,
-                  originality, and craftsmanship. This isn\'t just another
-                  marketplace — it\'s a gallery of the best digital creation has
+                  originality, and craftsmanship. This isn't just another
+                  marketplace — it's a gallery of the best digital creation has
                   to offer.
                 </p>
               </div>

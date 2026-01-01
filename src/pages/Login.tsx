@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getErrorMessage } from "@/types/api";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,9 +28,8 @@ const Login = () => {
       // Redirect based on role could be added here
       // For now, redirect to dashboard
       navigate("/dashboard");
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Login failed. Please try again.";
-      setError(message);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }

@@ -13,7 +13,7 @@ export function Newsletter() {
     if (email) {
       setIsSubmitted(true);
       toast.success("Thank you for subscribing!", {
-        description: "You\'ll receive our curated picks weekly.",
+        description: "You'll receive our curated picks weekly.",
       });
       setEmail("");
       setTimeout(() => setIsSubmitted(false), 3000);
@@ -24,7 +24,7 @@ export function Newsletter() {
     <section className="section-padding bg-gradient-to-b from-midnight to-sapphire/20 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-sapphire/10 rounded-full blur-[150px]" />
-      
+
       <div className="container-luxury relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           {/* Content */}
@@ -35,7 +35,7 @@ export function Newsletter() {
             Get Curated Picks Weekly
           </h2>
           <p className="text-cream/60 mb-8 max-w-lg mx-auto">
-            Subscribe to our newsletter for handpicked digital products, creator 
+            Subscribe to our newsletter for handpicked digital products, creator
             spotlights, and exclusive early access to new releases.
           </p>
 

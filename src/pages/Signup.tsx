@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeOff, CheckCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { getErrorMessage } from "@/types/api";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,9 +50,8 @@ const Signup = () => {
       } else {
         navigate("/purchases");
       }
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Registration failed. Please try again.";
-      setError(message);
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
