@@ -36,6 +36,8 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCancel = lazy(() => import("./pages/PaymentCancel"));
+const FreeDownloads = lazy(() => import("./pages/FreeDownloads"));
+const SellerPromoCodes = lazy(() => import("./pages/seller/PromoCodes"));
 
 // Legal Pages
 const Terms = lazy(() => import("./pages/Terms"));
@@ -84,6 +86,7 @@ const App = () => (
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:slug" element={<ProductDetail />} />
+                  <Route path="/free" element={<FreeDownloads />} />
                   <Route path="/sell" element={<Sell />} />
                   <Route path="/sell/onboarding" element={<SellerOnboarding />} />
                   <Route path="/about" element={<About />} />
@@ -93,6 +96,7 @@ const App = () => (
                   <Route path="/dashboard" element={<SellerDashboard />} />
                   <Route path="/dashboard/upload" element={<DashboardUpload />} />
                   <Route path="/dashboard/edit/:productId" element={<ProductEdit />} />
+                  <Route path="/dashboard/promo-codes" element={<SellerPromoCodes />} />
                   <Route path="/purchases" element={<BuyerDashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/seller/:displayName" element={<SellerProfile />} />

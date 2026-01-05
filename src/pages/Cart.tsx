@@ -17,6 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { PromoCodeInput } from "@/components/checkout/PromoCodeInput";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -24,11 +25,27 @@ const Cart = () => {
     const { items, removeItem, updateQuantity, clearCart } = useCartStore();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
+    // Promo code state
+    const [appliedPromo, setAppliedPromo] = useState<{
+        code: string;
+        discount: number;
+        discountType: "percentage" | "fixed";
+    } | null>(null);
+
     // Calculate totals
     const subtotal = items.reduce(
         (total, item) => total + item.price * item.quantity,
         0
     );
+
+    // Calculate discount
+    const discount = appliedPromo
+        ? appliedPromo.discountType === "percentage"
+            ? (subtotal * appliedPromo.discount) / 100
+            : appliedPromo.discount
+        : 0;
+
+    const total = subtotal - discount;
 
     const handleQuantityChange = (itemId: string, newQuantity: number) => {
         if (newQuantity < 1) {
@@ -36,6 +53,37 @@ const Cart = () => {
         } else {
             updateQuantity(itemId, newQuantity);
         }
+    };
+
+    const handleApplyPromo = async (code: string) => {
+        // In production, this would validate against the backend
+        try {
+            const response = await api.post("/promo/validate", { code });
+            const { valid, discount, discountType } = response.data;
+
+            if (valid) {
+                setAppliedPromo({ code, discount, discountType });
+            }
+            return { valid, discount, discountType };
+        } catch {
+            // Mock validation for demo
+            const mockCodes: Record<string, { discount: number; discountType: "percentage" | "fixed" }> = {
+                "SAVE10": { discount: 10, discountType: "percentage" },
+                "SAVE20": { discount: 20, discountType: "percentage" },
+                "FLAT500": { discount: 500, discountType: "fixed" },
+            };
+
+            const promo = mockCodes[code.toUpperCase()];
+            if (promo) {
+                setAppliedPromo({ code: code.toUpperCase(), ...promo });
+                return { valid: true, ...promo };
+            }
+            return { valid: false, discount: 0, discountType: "percentage" };
+        }
+    };
+
+    const handleRemovePromo = () => {
+        setAppliedPromo(null);
     };
 
     const handleCheckout = async () => {
@@ -63,6 +111,7 @@ const Cart = () => {
 
             const response = await api.post("/orders/checkout", {
                 items: checkoutItems,
+                promoCode: appliedPromo?.code,
             });
 
             // Redirect to Stripe checkout
@@ -236,17 +285,32 @@ const Cart = () => {
                                                 <span className="text-muted-foreground">Subtotal</span>
                                                 <span>{formatPrice(subtotal, "USD")}</span>
                                             </div>
+                                            {appliedPromo && (
+                                                <div className="flex justify-between text-green-500">
+                                                    <span>Discount ({appliedPromo.code})</span>
+                                                    <span>-{formatPrice(discount, "USD")}</span>
+                                                </div>
+                                            )}
                                             <div className="flex justify-between text-muted-foreground">
                                                 <span>Processing Fee</span>
                                                 <span>Calculated at checkout</span>
                                             </div>
                                         </div>
 
+                                        {/* Promo Code Input */}
+                                        <PromoCodeInput
+                                            onApply={handleApplyPromo}
+                                            onRemove={handleRemovePromo}
+                                            appliedCode={appliedPromo?.code}
+                                            appliedDiscount={appliedPromo?.discount}
+                                            discountType={appliedPromo?.discountType}
+                                        />
+
                                         <div className="border-t border-sapphire/20 pt-4">
                                             <div className="flex justify-between text-lg font-medium">
                                                 <span>Total</span>
                                                 <span className="text-champagne">
-                                                    {formatPrice(subtotal, "USD")}
+                                                    {formatPrice(total, "USD")}
                                                 </span>
                                             </div>
                                         </div>
